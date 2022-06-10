@@ -5,59 +5,9 @@
 - url : 
 - Spring Boot, JPA(Hibernate), AWS EC2(배포 환경), AWS RDS(DB, MySQL Server)
 
-## 데이터베이스 설계
-### 개체 및 속성 추출
-#### 사용자 (Users)
-- 사용자 아이디
-- 이메일
-- 비밀번호
-- 작성 날짜
-- 수정 날짜
 
-#### 게시물 (Boards)
-- 게시물 아이디
-- 사용자 아이디
-- 제목
-- 내용
-- 조회수
-- 작성 날짜
-- 수정 날짜
-
-#### 좋아요 (Favorites)
-- 좋아요 아이디
-- 사용자 아이디
-- 게시물 아이디
-- 상태(Y,N)
-- 작성 날짜
-- 수정 날짜
-
-### 데이터 모델링
-#### 사용자 (Users)
-- USER_ID (PK, INT)
-- EMAIL (VARCHAR)
-- PASSWORD (VARCHAR)
-- CREATED_DATE (DATETIME)
-- MODIFIED_DATE (DATETIME)
-
-#### 게시물 (Boards)
-- BOARD_ID (PK, INT)
-- USER_ID (FK, INT)
-- TITLE (TEXT)
-- BODY (TEXT)
-- VIEW_COUNT (INT)
-- CREATED_DATE (DATETIME)
-- MODIFIED_DATE (DATETIME)
-
-#### 좋아요 (Favorites)
-- ID (PK, INT)
-- USER_ID (FK, INT)
-- BOARD_ID (FK, INT)
-- STATUS (CHAR)
-- CREATED_DATE (DATETIME)
-- MODIFIED_DATE (DATETIME)
-
-### ERD
-![level2-erd](https://user-images.githubusercontent.com/39722357/172979859-86aefbf3-6614-461e-8bc9-67df2e4400e5.png)
+## 데이터베이스
+- [데이터베이스 설계](https://github.com/geonoo/magazine/wiki/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EC%84%A4%EA%B3%84)
 
 
 ## 필수
