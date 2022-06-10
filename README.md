@@ -2,7 +2,7 @@
 ## Info
 - 매거진 사이트 만들기
 - 주특기 2주차 과제
--  : 
+- 배포서버 : 
 - Spring Boot, JPA(Hibernate), AWS EC2(배포 환경), AWS RDS(DB, MySQL Server)
 
 
