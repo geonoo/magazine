@@ -1,5 +1,6 @@
 package com.geonoo.magazine.controller;
 
+import com.geonoo.magazine.dto.ReturnDto;
 import com.geonoo.magazine.model.Users;
 import com.geonoo.magazine.repository.UsersRepository;
 import com.geonoo.magazine.security.JwtTokenProvider;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -34,17 +36,24 @@ public class UsersController {
 
     // 로그인
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, String> user) {
+    public ReturnDto login(@RequestBody Map<String, String> user) {
+        Map<String, String> token = new HashMap<>();
+
         Users member = userRepository.findByEmail(user.get("email"))
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
         if (!passwordEncoder.matches(user.get("password"), member.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-        return jwtTokenProvider.createToken(member.getUsername(), member.getRoles());
+
+        token.put("Access-Token", jwtTokenProvider.createAccessToken(member, member.getRoles()));
+        token.put("Refresh-Token", jwtTokenProvider.createRefreshToken());
+
+        return new ReturnDto("OK", "토큰생성완료", token);
     }
 
     @GetMapping("/user/test")
     public String userTest(){
         return "안녕?";
     }
+
 }

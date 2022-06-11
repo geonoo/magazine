@@ -1,5 +1,6 @@
 package com.geonoo.magazine.security;
 
+import com.geonoo.magazine.model.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -24,10 +25,16 @@ public class JwtTokenProvider {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
-    // 토큰 유효시간 30분
-    private long tokenValidTime = 30 * 60 * 1000L;
+
+    // 인증 토큰 유효시간 15분
+    private long accessTokenValidTime = 15 * 60 * 1000L;
+
+    // 재발급 토큰 유효시간 300분
+    private long refreshTokenValidTime = 300 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
+
+    private Jws<Claims> claims;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -35,15 +42,24 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    // JWT 토큰 생성
-    public String createToken(String userPk, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
-        claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
+    // JWT Access 토큰 생성
+    public String createAccessToken(Users users, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(users.getEmail()); // JWT payload 에 저장되는 정보단위
+        claims.put("roles", roles.get(0)); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
+                .setExpiration(new Date(now.getTime() + accessTokenValidTime)) // set Expire Time
+                .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
+                // signature 에 들어갈 secret값 세팅
+                .compact();
+    }
+    public String createRefreshToken() {
+        Date now = new Date();
+        return Jwts.builder()
+                .setIssuedAt(now) // 토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + refreshTokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
@@ -60,20 +76,24 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
+    // Request의 Header에서 token 값을 가져옵니다. "Access-Token" : "TOKEN값'
+    public String accessResolveToken(HttpServletRequest request) {
+        return request.getHeader("Access-Token");
+    }
+
+    // Request의 Header에서 token 값을 가져옵니다. "Refresh-Token" : "TOKEN값'
+    public String refreshResolveToken(HttpServletRequest request) {
+        return request.getHeader("Refresh-Token");
     }
 
     // 토큰의 유효성 + 만료일자 확인
     public boolean validateToken(String jwtToken) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
         }
     }
-
 
 }
