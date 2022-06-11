@@ -48,7 +48,7 @@ class BoardsServiceTest {
 
         //when
         when(boardsRepository.save(any(Boards.class))).thenReturn(boards);
-        Boards result = boardsService.save(boardsDto);
+        Boards result = boardsService.saveBoard(boardsDto);
         //then
         assertEquals(userId, result.getUserId());
         assertEquals(title, result.getTitle());
@@ -73,7 +73,7 @@ class BoardsServiceTest {
 
         //then
         when(boardsRepository.findAll()).thenReturn(boardsList);
-        List<Boards> resultList = boardsService.findAll();
+        List<Boards> resultList = boardsService.findAllBoard();
 
         assertEquals(1, resultList.size());
         assertEquals(boards.getTitle(), resultList.get(0).getTitle());
@@ -129,7 +129,7 @@ class BoardsServiceTest {
         //when
         when(boardsRepository.findById(boardId))
                 .thenReturn(Optional.ofNullable(boards));
-        Long result = boardsService.deleteOne(boardId);
+        Long result = boardsService.deleteOneBoard(boardId);
 
         //then
         assertEquals(boardId, result);
@@ -157,7 +157,7 @@ class BoardsServiceTest {
 
         when(boardsRepository.findById(boardId))
                 .thenReturn(Optional.ofNullable(boards));
-        Boards result = boardsService.updateOne(boardId, boardsDto);
+        Boards result = boardsService.updateOneBoard(boardId, boardsDto);
 
         assertEquals(title, result.getTitle());
         assertEquals(body, result.getBody());
