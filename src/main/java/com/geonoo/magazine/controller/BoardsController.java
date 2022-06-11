@@ -17,12 +17,12 @@ public class BoardsController {
 
     @PostMapping("/api/board")
     public Boards addBoard(@Valid @RequestBody BoardsDto boardsDto) {
-        return boardsService.save(boardsDto);
+        return boardsService.saveBoard(boardsDto);
     }
 
     @GetMapping("/api/board")
     public List<Boards> listBoard(){
-        return boardsService.findAll();
+        return boardsService.findAllBoard();
     }
 
     @GetMapping("/api/board/{boardId}")
@@ -32,12 +32,12 @@ public class BoardsController {
 
     @DeleteMapping("/api/board/{boardId}")
     public Long deleteBoard(@PathVariable Long boardId){
-        return boardsService.deleteOne(boardId);
+        return boardsService.deleteOneBoard(boardId);
     }
 
     @PutMapping("/api/board/{boardId}")
     public Boards putBoard(@Valid @PathVariable Long boardId, @RequestBody BoardsDto boardsDto){
-        return boardsService.updateOne(boardId, boardsDto);
+        return boardsService.updateOneBoard(boardId, boardsDto);
     }
 
 }

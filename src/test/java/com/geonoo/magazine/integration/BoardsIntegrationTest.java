@@ -37,7 +37,7 @@ public class BoardsIntegrationTest {
                 body
         );
         // when
-        Boards boards = boardsService.save(boardsDto);
+        Boards boards = boardsService.saveBoard(boardsDto);
         // then
         assertNotNull(boards.getBoardId());
         assertEquals(userId, boards.getUserId());
@@ -54,7 +54,7 @@ public class BoardsIntegrationTest {
         // given
 
         //when
-        List<Boards> boardsList = boardsService.findAll();
+        List<Boards> boardsList = boardsService.findAllBoard();
 
         //then
         assertEquals(1, boardsList.size());
@@ -88,7 +88,7 @@ public class BoardsIntegrationTest {
                 body
         );
         //when
-        Boards boards = boardsService.updateOne(createdBoards.getBoardId(), boardsDto);
+        Boards boards = boardsService.updateOneBoard(createdBoards.getBoardId(), boardsDto);
         //then
         assertEquals(createdBoards.getBoardId(), boards.getBoardId());
         assertEquals(createdBoards.getUserId(), boards.getUserId());
@@ -103,7 +103,7 @@ public class BoardsIntegrationTest {
         //given
         Long boardId = createdBoards.getBoardId();
         //when
-        Long resultId = boardsService.deleteOne(boardId);
+        Long resultId = boardsService.deleteOneBoard(boardId);
         //then
         assertEquals(boardId, resultId);
     }
