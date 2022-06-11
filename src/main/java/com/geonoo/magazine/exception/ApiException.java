@@ -1,5 +1,6 @@
 package com.geonoo.magazine.exception;
 
+import com.geonoo.magazine.dto.ReturnDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,6 +25,7 @@ public class ApiException extends RuntimeException{
     public ResponseEntity<Map<String, String>> handleArgumentException(IllegalArgumentException e) {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", e.getMessage());
+        errors.put("result", "Fail");
         return ResponseEntity.internalServerError().body(errors);
     }
 }
