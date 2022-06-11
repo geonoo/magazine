@@ -21,3 +21,18 @@
 #### Entity 설계를 위해 무엇을 하였나요?
 #### 연관관계에 근거하여 설명해주세요.
 
+## 발생했던 문제들
+#### WebSecurityConfigurerAdapter - deprecated
+- Spring Boot에서 더이상 효율적이지 않거나 안전하지 않은 코드일 수 있어서 해당 부분을 수정해 주어야 했습니다.
+- https://github.com/geonoo/magazine/issues/8
+- SecurityFilterChain을 이용하면 된다고 합니다.
+
+#### JWT 비밀키를 Class에 작성하여 노출되는데 어떻게 해결하지?
+- git에 push 했을 때, 비밀키가 노출되서 보안 이슈가 생길 수 있다.
+- https://github.com/geonoo/magazine/issues/10
+- application.properties을 .gitignore에 적용시키고, application.properties해당 파일에서 꺼내서 사용 하였습니다.
+
+#### Access Token, Refresh Token 적용기
+- 상세내용은 아래 이슈 링크에 있습니다.
+- https://github.com/geonoo/magazine/issues/9
+
