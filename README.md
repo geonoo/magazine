@@ -60,6 +60,7 @@
 #### Access Token, Refresh Token 적용기
 - 상세내용은 아래 이슈 링크에 있습니다.
 - https://github.com/geonoo/magazine/issues/9
+- 다른 기능부터 우선순위가 되어서 주석처리하게 되었습니다. (06/13)
 
 #### Executing an update/delete query; nested exception is javax.persistence.Transaction
 
