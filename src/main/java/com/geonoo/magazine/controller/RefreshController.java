@@ -33,7 +33,7 @@ public class RefreshController {
             Users member = usersRepository.findByEmail(usersDto.getEmail())
                     .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
 
-            token.put("Access-Token", jwtTokenProvider.createAccessToken(member, member.getRoles()));
+            token.put("Access-Token", jwtTokenProvider.createAccessToken(member));
             token.put("Refresh-Token", jwtTokenProvider.createRefreshToken());
             returnDto = new ReturnDto("OK", "토큰생성완료",token);
         }else{
