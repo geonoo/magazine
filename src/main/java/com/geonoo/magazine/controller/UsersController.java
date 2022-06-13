@@ -40,9 +40,9 @@ public class UsersController {
         Map<String, String> token = new HashMap<>();
 
         Users member = userRepository.findByEmail(user.get("email"))
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("이메일 또는 패스워드를 확인해주세요"));
         if (!passwordEncoder.matches(user.get("password"), member.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+            throw new IllegalArgumentException("이메일 또는 패스워드를 확인해주세요");
         }
 
         token.put("Access-Token", jwtTokenProvider.createAccessToken(member, member.getRoles()));
