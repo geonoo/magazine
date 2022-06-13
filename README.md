@@ -61,3 +61,12 @@
 - 상세내용은 아래 이슈 링크에 있습니다.
 - https://github.com/geonoo/magazine/issues/9
 
+#### Executing an update/delete query; nested exception is javax.persistence.Transaction
+
+#### Many To One, One To Many ;;
+- 연관관계에 대한 감을 잘 잡지 못하고 하루종일 구글링 -> 코드 -> 구글링 -> 코드...
+
+#### @AuthenticationPrincipal
+
+
+
