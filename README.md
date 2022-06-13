@@ -69,6 +69,10 @@
 
 #### @AuthenticationPrincipal
 
-#### @JsonIgnore
+#### @JsonIgnore, @JsonProperty, @JsonAlias 
+ - [참조](https://blog.devgenius.io/three-jackson-annotations-which-all-spring-boot-developers-should-know-1b6304dda19)
+
+
+
 
 
