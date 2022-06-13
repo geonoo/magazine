@@ -26,8 +26,8 @@ public class JwtTokenProvider {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    // 인증 토큰 유효시간 15분
-    private long accessTokenValidTime = 15 * 60 * 1000L;
+    // 인증 토큰 유효시간 30분
+    private long accessTokenValidTime = 30 * 60 * 1000L;
 
     // 재발급 토큰 유효시간 300분
     private long refreshTokenValidTime = 300 * 60 * 1000L;
@@ -43,9 +43,9 @@ public class JwtTokenProvider {
     }
 
     // JWT Access 토큰 생성
-    public String createAccessToken(Users users, List<String> roles) {
+    public String createAccessToken(Users users) {
         Claims claims = Jwts.claims().setSubject(users.getEmail()); // JWT payload 에 저장되는 정보단위
-        claims.put("roles", roles.get(0)); // 정보는 key / value 쌍으로 저장된다.
+        claims.put("roles", users.getRoles().get(0)); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
