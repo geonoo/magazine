@@ -77,6 +77,7 @@ query {
 #### Restful하게 짜기 위해 무엇을 고려했나요?
 - Over-Fetching되어서 나오는 부분을 최소화하려고 시도는 해보았다.
 - 리펙토링 시에 통일된 End-Point를 맞춰야겠다는 생각이 들었다.
+- response-entity만들기!
 #### Entity 설계를 위해 무엇을 하였나요?
 - ?!
 
