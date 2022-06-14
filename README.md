@@ -38,13 +38,47 @@
 - [참조1](https://khj93.tistory.com/entry/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-REST-API%EB%9E%80-REST-RESTful%EC%9D%B4%EB%9E%80)
 - [참조2](https://gmlwjd9405.github.io/2018/09/21/rest-and-restful.html)
 
-#### 왜 Restful하게 짜야하나요?
-- 그러면 왜 Restful하게 설계해야할까?
-- 
+#### 왜 Restful하게 설계해야할까?
+- 결론은 이해하기 쉽고 사용하기 쉬운 REST API를 만드는 것이 목적이다.
+- RESTful한 API를 구현하는 근본적인 목적이 성능 향상에 있는 것이 아니라 일관적인 API를 통한 이해도 및 호환성을 높이는 것이 주 목적이니, 성능이 중요한 상황에서는 굳이 RESTful한 API를 구현할 필요는 없다고 한다.
+
 #### Restful의 장/단점
+- **장점**
+- 위에서 말 했듯이 API를 쉽게 사용하기 위한것이 바로 장점이다.
+- 각자의 역할이 명확하게 분리되어 있다
+- HTTP 프로토콜 서비스라는 기본적인 요구만 충족되면 다양한 플랫폼에서 원하는 서비스를 쉽고 빠르게 개발하고 배포할 수 있게 된다.
+- **단점**
+- 메소드 형태가 제한적 이라는 문제점을 가져오기도 한다.
+- 관리의 어려움과 좋은(공식화 된) API 디자인 가이드가 존재하지 않는다. 결국 표준이 없다는 말이다.
+- REST API는 간단한 서비스에는 문제가 없지만 서비스와 복잡해질수록 [Over-Fetching 과 Under-Fetching](https://ivvve.github.io/2019/07/24/server/graphql/over-under-fetching/)  문제가 발생할 수 있습니다.
+- 비슷한 역할을 하지만 Endpoint가 다른 API가 많이 개발됩니다.
+
 #### Restful의 대안은?
+- REST API와 대비되는 facebook에서 개발한 쿼리 언어인 GraphQL로 많이 비교한다고 들었다.
+- 하나의 Endpoint를 생성하고 클라이언트에게 필요한 데이터를 직접 쿼리를 통해 호출하게끔 하는 방식입니다.
+- 예를 들어 Over-Fetching 같은 문제는 아래와 같은 쿼리로 필요한 데이터만 조회할 수 있습니다.
+```
+query {
+	user(user_id: 1) {
+		username
+	}
+}
+```
+- **GraphQL 장점**
+- 하나의 Endpoint 위에서도 언급했듯이 GraphQL은 하나의 Endpoint를 갖습니다.
+- IOS, Android 와 같은 다른 기종에 대해 별도의 API를 개발할 필요가 없습니다.
+- **GraphQL 단점**
+- 하나의 Endpoint를 사용하기 때문에 HTTP에 제공하는 캐싱 전략을 그대로 사용하는 것이 불가능합니다.
+- GraphQL은 아직 파일 업로드에 대해서 구체적인 구현 방법이 정의되어 있지 않습니다. (따로 구현해야 한다고 함)
+- **결론**
+- REST API의 문제점을 극복하기 위해 등장했다고는 하나 아직까지는 REST API가 더 많이 쓰이고 있습니다.
+- 둘의 장단점이 명확하니 상황에 맞춰 적절한 통신 규약을 선택하는게 중요합니다.
+
 #### Restful하게 짜기 위해 무엇을 고려했나요?
+- Over-Fetching되어서 나오는 부분을 최소화하려고 시도는 해보았다.
+- 리펙토링 시에 통일된 End-Point를 맞춰야겠다는 생각이 들었다.
 #### Entity 설계를 위해 무엇을 하였나요?
+
 #### 연관관계에 근거하여 설명해주세요.
 
 ## 요구사항
