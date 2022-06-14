@@ -23,21 +23,23 @@
 
 ## 요구사항
 #### 회원가입
-- 닉네임은 `최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)`로 구성하기
-- 비밀번호는 `최소 4자 이상이며, 닉네임과 같은 값이 포함된 경우 회원가입에 실패`로 만들기
-- 비밀번호 확인은 비밀번호와 정확하게 일치하기
+- 닉네임은 `최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)`로 구성하기(이메일로 변경) o.k
+- 비밀번호는 `최소 4자 이상이며, 닉네임과 같은 값이 포함된 경우 회원가입에 실패`로 만들기 o.k
+- 비밀번호 확인은 비밀번호와 정확하게 일치하기 o.k
 - [유효성](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/dto/UsersDto.java)
 
 #### 로그인
-- 로그인 버튼을 누른 경우 닉네임과 비밀번호가 데이터베이스에 등록됐는지 확인한 뒤, 하나라도 맞지 않는 정보가 있다면 "닉네임 또는 패스워드를 확인해주세요"라는 메세지를 프론트엔드에서 띄워줄 수 있도록 예외처리 하기
+- 로그인 버튼을 누른 경우 닉네임과 비밀번호가 데이터베이스에 등록됐는지 확인한 뒤, 하나라도 맞지 않는 정보가 있다면 "닉네임 또는 패스워드를 확인해주세요"라는 메세지를 프론트엔드에서 띄워줄 수 있도록 예외처리 하기 o.k
 - [Service](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/service/UsersService.java)
 - [ApiException](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/exception/ApiException.java)
 
 #### 로그인 검사
-- 로그인 하지 않은 사용자도, 게시글 목록 조회는 가능하도록 하기
-- 로그인하지 않은 사용자가 좋아요 버튼을 눌렀을 경우, "로그인이 필요합니다." 라는 메세지를 프론트엔드에서 띄워줄 수 있도록 예외처리 하기
+- 로그인 하지 않은 사용자도, 게시글 목록 조회는 가능하도록 하기 o.k
+- 로그인하지 않은 사용자가 좋아요 버튼을 눌렀을 경우, "로그인이 필요합니다." 라는 메세지를 프론트엔드에서 띄워줄 수 있도록 예외처리 하기 o.k
 - 로그인 한 사용자가 로그인 페이지 또는 회원가입 페이지에 접속한 경우 "이미 로그인이 되어있습니다."라는 메세지로 예외처리하기
 - 인증 인가를 어떤 개념(Token/Session)을 채택 했는지, 그 이유에 대해서 설명하기
+- [게시판 컨트롤러](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/controller/BoardsController.java)
+- JWT Token 방식의 인증, 인가를 선택했다 이유는...
 
 #### CORS 해결하기
 - CORS란 브라우저에서는 보안적인 이유로 cross-origin HTTP 요청들을 제한한다고 합니다.
