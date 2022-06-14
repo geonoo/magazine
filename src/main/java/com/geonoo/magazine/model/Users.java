@@ -1,30 +1,22 @@
 package com.geonoo.magazine.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Builder
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
+@AllArgsConstructor @NoArgsConstructor
+@Getter @Builder
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "u-id")
 public class Users extends BaseTime{
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long user_id;
 
     @Column(nullable = false, unique = true)
@@ -36,9 +28,11 @@ public class Users extends BaseTime{
     @Column(nullable = false)
     private String nick;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Boards> boardsList = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Favorites> favoritesList = new ArrayList<>();
 
