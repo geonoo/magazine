@@ -20,4 +20,8 @@ public class BoardsDto {
 
     @NotBlank(message = "내용을 입력해주세요")
     private String body;
+
+    private String img_url;
+
+    private int template;
 }
