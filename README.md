@@ -63,16 +63,66 @@
 - 다른 기능부터 우선순위가 되어서 주석처리하게 되었습니다. (06/13)
 
 #### Executing an update/delete query; nested exception is javax.persistence.Transaction
-
-#### Many To One, One To Many ;;
-- 연관관계에 대한 감을 잘 잡지 못하고 하루종일 구글링 -> 코드 -> 구글링 -> 코드...
+ - Spring Data JPA에서는 Delete와 Update 함수가 없다.
+ - Update시에 자바영역에서만 Update해주고 실제 데이터베이스에는 반영이 안되었기 때문에 @Transactional 해당 어노테이션을 붙여주고 해결하였다.
 
 #### @AuthenticationPrincipal
+ - 로그인한 사용자만 접근할 수 있는 API를 만들고 싶었다.
+ - Restful하게 하기 위해서 API URL를 맞춰주어야 했습니다.
+ - 문제는 SecurityFilterChain의 authorizeRequests()를 이용하려고하니 같은 URL로 Method만 변경된 경우가 있었습니다.
+ - 그래서 메소드 파라미터에 @AuthenticationPrincipal를 추가해서 현재 로그인한 사용자를 가져와서 확인헀다.
 
-#### @JsonIgnore, @JsonProperty, @JsonAlias 
- - [참조](https://blog.devgenius.io/three-jackson-annotations-which-all-spring-boot-developers-should-know-1b6304dda19)
 
-
+#### Many To One, One To Many ;;
+- 연관관계에 대한 감을 잘 잡지 못하고 하루종일 구글링 -> 코드 -> 구글링 -> 코드...를 반복하고 있다.
+- 현재 게시판 하나를 호출 했을 때 아래와 같이 나온다.
+```
+{
+        "id": 1,
+        "createdDate": "2022-06-14T01:57:50.374745",
+        "modifiedDate": "2022-06-14T01:57:50.374745",
+        "board_id": 2,
+        "title": "제목",
+        "body": "내용",
+        "img_url": null,
+        "viewCount": 5,
+        "template": 1
+    }
+```
+- 내가원하는 코드는 아래 처럼 favorites가 담겼으면 한다.
+```
+{
+        "id": 1,
+        "createdDate": "2022-06-14T01:57:50.374745",
+        "modifiedDate": "2022-06-14T01:57:50.374745",
+        "board_id": 2,
+        "title": "제목",
+        "body": "내용",
+        "favorites" : [
+             {
+              "user_id" : "1",
+              "board_id" : "2"
+             },
+             {
+              "user_id" : "3",
+              "board_id" : "2"
+             }
+        ]
+        "img_url": null,
+        "viewCount": 5,
+        "template": 1
+    }
+```
+- 연관 관계 설계부터 잘 이해를 못하고 구글링해서 코드만 계속 바꾸고 있으니 답을 얻기가 어렵워서 강의를 다시 보고있다.
+- [잭슨 – 양방향 관계](https://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion)
+- [참조](https://blog.devgenius.io/three-jackson-annotations-which-all-spring-boot-developers-should-know-1b6304dda19)
+```
+@JsonIgnore
+@OneToMany(mappedBy = "boards", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Favorites> favoritesList = new ArrayList<>();
+```
+- 현재 이런식으로되어 있고 @JsonIgnore 해당 어노테이션을 지우면 아래 처럼 직렬화 문제라고 알려주고는 있다.
+- com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer....
 
 
 
