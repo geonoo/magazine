@@ -1,20 +1,23 @@
 package com.geonoo.magazine.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.geonoo.magazine.dto.BoardsDto;
-import lombok.*;
-import org.springframework.stereotype.Service;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter @Entity @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "b-id")
+@ToString
 public class Boards extends BaseTime{
 
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long board_id;
     @Column(length=500)
     private String title;
@@ -32,7 +35,7 @@ public class Boards extends BaseTime{
 
 
     //어떤문제가 있을까?
-    @JsonIgnore
+//    @JsonIgnore
 //    @JsonManagedReference
     @OneToMany(mappedBy = "boards", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Favorites> favoritesList = new ArrayList<>();

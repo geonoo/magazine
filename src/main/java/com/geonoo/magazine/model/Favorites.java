@@ -1,9 +1,8 @@
 package com.geonoo.magazine.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,26 +10,24 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@NoArgsConstructor
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "f-id")
 public class Favorites {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    //어떤문제가 있을까?
-    //    @JsonBackReference
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Boards boards;
 
+//    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
     public Favorites(Boards boards, Users users) {
         users.addFavorites(this);
         boards.addFavorites(this);
-    }
-
-    public Favorites() {
-
     }
 }

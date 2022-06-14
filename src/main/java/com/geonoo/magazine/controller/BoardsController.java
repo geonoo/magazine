@@ -1,27 +1,21 @@
 package com.geonoo.magazine.controller;
 
-import com.geonoo.magazine.dto.BoardResponseDto;
 import com.geonoo.magazine.dto.BoardsDto;
 import com.geonoo.magazine.model.Boards;
 import com.geonoo.magazine.security.UserDetailsImpl;
 import com.geonoo.magazine.service.BoardsService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
 public class BoardsController {
 
     private final BoardsService boardsService;
-    private final ModelMapper modelMapper;
 
     @PostMapping("/api/board")
     public String addBoard(@Valid @RequestBody BoardsDto boardsDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -34,7 +28,6 @@ public class BoardsController {
 //        List<BoardResponseDto> resultList = Arrays.asList(
 //                modelMapper.map(boardsService.findAllBoard(), BoardResponseDto[].class)
 //        );
-
         return boardsService.findAllBoard();
     }
 
