@@ -48,11 +48,8 @@
 - 해당 이슈 해결방법은 WebSecurityConfig.java 파일에서 CorsConfigurationSource를 bean으로 등록해서 사용하고 있습니다.
 - [CORS](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/security/WebSecurityConfig.java)
 
-#### 좋아요 순 정렬
-- 정렬 기준 중 하나를 선택해주세요!
-- 생성일 순
-- 좋아요 순
-- view 순
+#### 생성일 순 정렬
+- [관련 이슈](https://github.com/geonoo/magazine/issues/25)
 
 
 ## 발생했던 문제들
