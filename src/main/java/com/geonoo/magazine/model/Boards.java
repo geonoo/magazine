@@ -30,6 +30,8 @@ public class Boards extends BaseTime{
     @JoinColumn(name = "user_id",nullable = false)
     private Users users;
 
+
+    //어떤문제가 있을까?
     @JsonIgnore
 //    @JsonManagedReference
     @OneToMany(mappedBy = "boards", fetch = FetchType.LAZY, orphanRemoval = true)

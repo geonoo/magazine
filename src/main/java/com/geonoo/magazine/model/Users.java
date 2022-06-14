@@ -17,10 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Builder
+@AllArgsConstructor @NoArgsConstructor
+@Getter @Builder
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Users extends BaseTime{
 

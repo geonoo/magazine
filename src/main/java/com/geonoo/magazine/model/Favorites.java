@@ -17,6 +17,7 @@ public class Favorites {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //어떤문제가 있을까?
     //    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     private Boards boards;
