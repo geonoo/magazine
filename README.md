@@ -123,6 +123,5 @@
 ```
 - 현재 이런식으로되어 있고 @JsonIgnore 해당 어노테이션을 지우면 아래 처럼 직렬화 문제라고 알려주고는 있다.
 - com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer....
-
-
+- https://github.com/geonoo/magazine/issues/23
 
