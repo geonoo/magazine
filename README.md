@@ -12,9 +12,9 @@
 
 ## 필수
 #### 프레임워크와 라이브러리의 차이점
-- 라이브러리와 프레임워크의 차이는 제어 흐름에 대한 주도성이 누구에게/어디에 있는가에 있다고 합니다.
+- 라이브러리와 프레임워크의 차이는 제어 흐름에 대한 주도성이 누구에게/어디에 있는가에 따라 다르다고 한다.
 - 프레임워크는 전체적인 흐름을 스스로가 쥐고 있으며 사용자는 그 안에서 필요한 코드를 짜 넣으면 된다.
-- 라이브러리는 사용자가 전체적인 흐름을 만들며 라이브러리를 가져다 쓰는 것이라고 할 수 있습니다.
+- 라이브러리는 사용자가 전체적인 흐름을 만들며 라이브러리를 가져다 쓰는 것이라고 할 수 있다.
 - 즉, 라이브러리는 가져다가 사용하고 호출하는 측에 주도성이 있고, 프레임워크는 프레임워크 안에 들어가서 사용한다는 느낌으로 접근하면 이해가 쉽다.
 
 #### 코드를 구현할때 예외처리를 위해 무엇을 했나요?
@@ -25,7 +25,22 @@
 - [사용한 부분](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/exception/ApiException.java)
 
 #### Restful이란?
+- **REST?**
+1. HTTP URI(Uniform Resource Identifier)를 통해 자원(Resource)을 명시하고,
+2. HTTP Method(POST, GET, PUT, DELETE)를 통해
+3. 해당 자원(URI)에 대한 CRUD Operation을 적용하는 것을 의미한다.
+- **RestFul?**
+- RESTful은 일반적으로 REST라는 아키텍처를 구현하는 웹 서비스를 나타내기 위해 사용되는 용어이다.
+- ‘REST API’를 제공하는 웹 서비스를 ‘RESTful’하다고 할 수 있다고 합니다.
+- 즉, REST 원리를 따르는 시스템은 RESTful이란 용어로 지칭된다.
+- RESTful하게 API 설계 규칙도 있다고 한다. 아래 블로그를 참조하면 확인가능하다.
+
+- [참조1](https://khj93.tistory.com/entry/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-REST-API%EB%9E%80-REST-RESTful%EC%9D%B4%EB%9E%80)
+- [참조2](https://gmlwjd9405.github.io/2018/09/21/rest-and-restful.html)
+
 #### 왜 Restful하게 짜야하나요?
+- 그러면 왜 Restful하게 설계해야할까?
+- 
 #### Restful의 장/단점
 #### Restful의 대안은?
 #### Restful하게 짜기 위해 무엇을 고려했나요?
