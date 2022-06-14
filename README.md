@@ -124,4 +124,35 @@
 - 현재 이런식으로되어 있고 @JsonIgnore 해당 어노테이션을 지우면 아래 처럼 직렬화 문제라고 알려주고는 있다.
 - com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer....
 - https://github.com/geonoo/magazine/issues/23
-
+```
+{
+    "createdDate": "2022-06-14T13:03:52.877356",
+    "modifiedDate": "2022-06-14T13:03:52.877356",
+    "board_id": 2,
+    "title": "제목",
+    "body": "내용",
+    "img_url": null,
+    "viewCount": 114,
+    "template": 1,
+    "favoritesList": [
+        {
+            "id": 3,
+            "users": {
+                "createdDate": "2022-06-14T13:03:35.60846",
+                "modifiedDate": "2022-06-14T13:03:35.60846",
+                "user_id": 1,
+                "email": "aaa@aa.com",
+                "password": "{bcrypt}$2a$10$27JZWAfiiPrPrZfGztivPupgWkcJfrthKSRg5qSywe8wjbyd3vLUq",
+                "nick": "cc",
+                "roles": [
+                    "ROLE_USER"
+                ],
+                "hibernateLazyInitializer": {}
+            }
+        }
+    ]
+}
+```
+- 위 처럼 해결은 했으나, 왜 되었는지는 정확히 이해가 안됌
+1. application.properties에 spring.jackson.serialization.fail-on-empty-beans=false 해당코드를 넣었다.
+2. 그리고 나오지 안아도 될 객체들을 @JsonIgnore 해당 코드로 막아주었다.
