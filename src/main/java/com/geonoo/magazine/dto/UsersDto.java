@@ -32,6 +32,9 @@ public class UsersDto {
 
     @AssertTrue(message = "비밀번호안에 이메일값이 포함되어 있습니다.") // return true면 포함X false면 포함
     public boolean isEmailInPassword() {
+        if (email == null || password == null){
+            throw new IllegalArgumentException("요청 값이 없습니다");
+        }
         return !this.password.contains(this.email.split("@")[0]);
     }
 }
