@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,15 @@ public class UsersService {
     private final UsersRepository usersRepository;
 
     @Transactional
-    public String saveUser(Users users){
+    public String saveUser(UsersDto usersDto){
+
+        Users users = Users.builder()
+                .email(usersDto.getEmail())
+                .password(passwordEncoder.encode(usersDto.getPassword()))
+                .nick(usersDto.getUsername())
+                .roles(Collections.singletonList("ROLE_USER"))
+                .build();
+
         if (checkEmailDuple(users.getEmail())){
             throw new IllegalArgumentException("이미 사용중인 이메일 입니다");
         }else{
@@ -41,7 +50,7 @@ public class UsersService {
         if (!passwordEncoder.matches(usersDto.getPassword(), users.getPassword())) {
             throw new IllegalArgumentException("이메일 또는 패스워드를 확인해주세요");
         }
-
+        System.out.println(users.toString());
         token.put("Access-Token", jwtTokenProvider.createAccessToken(users));
 
         return token;

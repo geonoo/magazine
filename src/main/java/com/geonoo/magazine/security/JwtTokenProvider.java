@@ -26,8 +26,8 @@ public class JwtTokenProvider {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    // 인증 토큰 유효시간 30분
-    private long accessTokenValidTime = 30 * 60 * 1000L;
+    // 인증 토큰 유효시간 300분
+    private long accessTokenValidTime = 300 * 60 * 1000L;
 
     // 재발급 토큰 유효시간 300분
     private long refreshTokenValidTime = 300 * 60 * 1000L;
@@ -46,6 +46,9 @@ public class JwtTokenProvider {
     public String createAccessToken(Users users) {
         Claims claims = Jwts.claims().setSubject(users.getEmail()); // JWT payload 에 저장되는 정보단위
         claims.put("roles", users.getRoles().get(0)); // 정보는 key / value 쌍으로 저장된다.
+        claims.put("username", users.getNick());
+        claims.put("email", users.getEmail());
+//        claims.put("userId", users.getUserId());
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
@@ -74,6 +77,9 @@ public class JwtTokenProvider {
     // 토큰에서 회원 정보 추출
     public String getUserPk(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+    public Long getUserIdPk(String token){
+        return Long.parseLong(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("userId").toString());
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "Access-Token" : "TOKEN값'

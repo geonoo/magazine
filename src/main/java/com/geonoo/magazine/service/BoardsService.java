@@ -2,7 +2,10 @@ package com.geonoo.magazine.service;
 
 import com.geonoo.magazine.dto.BoardsDto;
 import com.geonoo.magazine.model.Boards;
+import com.geonoo.magazine.model.Users;
 import com.geonoo.magazine.repository.BoardsRepository;
+import com.geonoo.magazine.repository.UsersRepository;
+import com.geonoo.magazine.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,19 +18,24 @@ public class BoardsService {
 
     private final BoardsRepository boardsRepository;
 
-    @Transactional
-    public Boards saveBoard(BoardsDto boardsDto){
-        Boards boards = Boards
-                .builder()
-                .userId(boardsDto.getUserId())
-                .title(boardsDto.getTitle())
-                .body(boardsDto.getBody())
-                .viewCount(0L)
-                .build();
-        return boardsRepository.save(boards);
+    private final UsersRepository usersRepository;
+
+    public String saveBoard(BoardsDto boardsDto, UserDetailsImpl userDetails){
+
+        Users users = usersRepository.findByEmail(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("등록된 사용자가 아닙니다")
+        );
+        Boards boards = new Boards(
+                boardsDto.getTitle(),
+                boardsDto.getImg_url(),
+                boardsDto.getBody(),
+                boardsDto.getTemplate(),
+                users);
+
+        boardsRepository.save(boards);
+        return "추가완료";
     }
 
-    @Transactional
     public List<Boards> findAllBoard(){
         return boardsRepository.findAll();
     }
@@ -40,17 +48,17 @@ public class BoardsService {
     }
 
     @Transactional
-    public Long deleteOneBoard(Long boardId){
+    public String deleteOneBoard(Long boardId){
         getBoards(boardId);
         boardsRepository.deleteById(boardId);
-        return boardId;
+        return "삭제완료";
     }
 
     @Transactional
-    public Boards updateOneBoard(Long boardId, BoardsDto boardsDto){
+    public String updateOneBoard(Long boardId, BoardsDto boardsDto){
         Boards boards = getBoards(boardId);
         boards.update(boardsDto);
-        return boards;
+        return "수정완료";
     }
 
     private Boards getBoards(Long boardId) {
