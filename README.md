@@ -26,9 +26,12 @@
 - 닉네임은 `최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)`로 구성하기
 - 비밀번호는 `최소 4자 이상이며, 닉네임과 같은 값이 포함된 경우 회원가입에 실패`로 만들기
 - 비밀번호 확인은 비밀번호와 정확하게 일치하기
+- [유효성](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/dto/UsersDto.java)
 
 #### 로그인
 - 로그인 버튼을 누른 경우 닉네임과 비밀번호가 데이터베이스에 등록됐는지 확인한 뒤, 하나라도 맞지 않는 정보가 있다면 "닉네임 또는 패스워드를 확인해주세요"라는 메세지를 프론트엔드에서 띄워줄 수 있도록 예외처리 하기
+- [Service](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/service/UsersService.java)
+- [ApiException](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/exception/ApiException.java)
 
 #### 로그인 검사
 - 로그인 하지 않은 사용자도, 게시글 목록 조회는 가능하도록 하기
@@ -37,7 +40,11 @@
 - 인증 인가를 어떤 개념(Token/Session)을 채택 했는지, 그 이유에 대해서 설명하기
 
 #### CORS 해결하기
-- CORS란 무엇이며, 어떤 상황에서 일어나는지 / 어떻게 해결하는지 알아보고, 프로젝트에 적용하기
+- CORS란 브라우저에서는 보안적인 이유로 cross-origin HTTP 요청들을 제한한다고 합니다.
+- 이 말은 백엔드에서 API를 만들어주면 다른 IP나 다른 포트에서 해당 API를 호출할 수 없게하는 보안정책 입니다.
+- 그래서 프론트엔드 개발자와 협업하려면 cross-origin 요청을 하려면 백엔드 서버의 동의가 필요합니다.
+- 해당 이슈 해결방법은 WebSecurityConfig.java 파일에서 CorsConfigurationSource를 bean으로 등록해서 사용하고 있습니다.
+- [CORS](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/security/WebSecurityConfig.java)
 
 #### 좋아요 순 정렬
 - 정렬 기준 중 하나를 선택해주세요!
