@@ -7,6 +7,7 @@ import com.geonoo.magazine.repository.BoardsRepository;
 import com.geonoo.magazine.repository.UsersRepository;
 import com.geonoo.magazine.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,7 +38,7 @@ public class BoardsService {
     }
 
     public List<Boards> findAllBoard(){
-        return boardsRepository.findAll();
+        return boardsRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
     }
 
     @Transactional
