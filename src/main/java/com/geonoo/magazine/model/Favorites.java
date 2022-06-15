@@ -17,16 +17,18 @@ public class Favorites {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private Long user_id;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Boards boards;
 
-//    @JsonIgnore
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
     public Favorites(Boards boards, Users users) {
+        this.user_id = users.getUser_id();
         users.addFavorites(this);
         boards.addFavorites(this);
     }

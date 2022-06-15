@@ -3,17 +3,17 @@ package com.geonoo.magazine.controller;
 import com.geonoo.magazine.security.UserDetailsImpl;
 import com.geonoo.magazine.service.FavoritesService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class FavoritesController {
     final FavoritesService favoritesService;
 
@@ -31,6 +31,11 @@ public class FavoritesController {
         loginCheck(userDetails);
         map.put("likeCount", String.valueOf(favoritesService.unlikes(boardId, userDetails)));
         return map;
+    }
+
+    @GetMapping("/api/board/test")
+    public void testBoard(HttpServletRequest request){
+        log.info(request.getRemoteAddr());
     }
 
     private void loginCheck(UserDetailsImpl userDetails) {

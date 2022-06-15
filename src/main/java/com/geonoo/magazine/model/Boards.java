@@ -24,9 +24,10 @@ public class Boards extends BaseTime{
     @Column(columnDefinition = "TEXT")
     private String body;
     private String img_url;
-
     private Long viewCount = 0L;
     private int template;
+
+    private String username;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,6 +52,7 @@ public class Boards extends BaseTime{
         this.body = body;
         this.viewCount = 0L;
         this.template = template;
+        this.username = user.getNick();
         user.addBoards(this);
     }
 
