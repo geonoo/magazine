@@ -1,16 +1,13 @@
 package com.geonoo.magazine.dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
-@ToString
-@AllArgsConstructor
 public class BoardsDto {
 
     private Long userId;
@@ -21,6 +18,7 @@ public class BoardsDto {
     @NotBlank(message = "내용을 입력해주세요")
     private String body;
 
+    @NotBlank(message = "이미지를 추가해주세요")
     private String img_url;
 
     private int template;

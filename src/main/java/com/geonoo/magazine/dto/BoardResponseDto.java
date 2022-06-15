@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
-@NoArgsConstructor
 public class BoardResponseDto {
     private Long boardId;
     private String title;

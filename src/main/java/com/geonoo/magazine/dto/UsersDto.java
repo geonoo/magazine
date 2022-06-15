@@ -1,19 +1,15 @@
 package com.geonoo.magazine.dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
-@ToString
-@AllArgsConstructor
 public class UsersDto {
 
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
@@ -32,7 +28,7 @@ public class UsersDto {
 
     @AssertTrue(message = "비밀번호안에 이메일값이 포함되어 있습니다.") // return true면 포함X false면 포함
     public boolean isEmailInPassword() {
-        if (email == null || password == null){
+        if (this.email == null || this.password == null){
             throw new IllegalArgumentException("요청 값이 없습니다");
         }
         return !this.password.contains(this.email.split("@")[0]);
