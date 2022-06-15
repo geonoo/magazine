@@ -1,8 +1,9 @@
 package com.geonoo.magazine.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geonoo.magazine.dto.BoardsDto;
 import com.geonoo.magazine.model.Boards;
-import com.geonoo.magazine.s3.AwsS3Service;
 import com.geonoo.magazine.security.UserDetailsImpl;
 import com.geonoo.magazine.service.BoardsService;
 import lombok.RequiredArgsConstructor;
@@ -18,32 +19,14 @@ import java.util.List;
 public class BoardsController {
 
     private final BoardsService boardsService;
-
-    private final AwsS3Service awsS3Service;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @PostMapping("/api/board")
-    public String addBoard(@Valid @RequestBody BoardsDto boardsDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String addBoard(@RequestParam("board") String board, @RequestPart List<MultipartFile> files
+            , @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
         loginCheck(userDetails);
-        return boardsService.saveBoard(boardsDto, userDetails);
-    }
-
-    /**
-     * Amazon S3에 파일 업로드
-     * @return 성공 시 200 Success와 함께 업로드 된 파일의 파일명 리스트 반환
-     */
-    @PostMapping("/api/board/file")
-    public List<String> uploadFile(@RequestPart List<MultipartFile> multipartFile) {
-        return awsS3Service.uploadFile(multipartFile);
-    }
-
-    /**
-     * Amazon S3에 업로드 된 파일을 삭제
-     * @return 성공 시 200 Success
-     */
-    @DeleteMapping("/api/board/file")
-    public String deleteFile(@RequestBody String img_url) {
-        awsS3Service.deleteFile(img_url);
-        return "ok";
+        BoardsDto boardsDto = objectMapper.readValue(board, BoardsDto.class);
+        return boardsService.saveBoard(boardsDto, userDetails, files);
     }
 
     @GetMapping("/api/board")
@@ -66,12 +49,15 @@ public class BoardsController {
     }
 
     @PutMapping("/api/board/{boardId}")
-    public String putBoard(@Valid @PathVariable Long boardId, @RequestBody BoardsDto boardsDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public String putBoard(@Valid @PathVariable Long boardId, @RequestParam("board") String board
+            , @RequestPart List<MultipartFile> files, @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
         loginCheck(userDetails);
-        return boardsService.updateOneBoard(boardId, boardsDto);
+        BoardsDto boardsDto = objectMapper.readValue(board, BoardsDto.class);
+        return boardsService.updateOneBoard(boardId, boardsDto, files);
     }
 
     private void loginCheck(UserDetailsImpl userDetails) {
+        System.out.println(userDetails);
         if(userDetails == null){
             throw new IllegalArgumentException("로그인이 필요합니다");
         }

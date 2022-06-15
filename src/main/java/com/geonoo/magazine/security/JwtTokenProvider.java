@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     private String secretKey;
 
     // 인증 토큰 유효시간 300분
-    private long accessTokenValidTime = 30 * 60 * 1000L;
+    private long accessTokenValidTime = 3000 * 60 * 1000L;
 
     // 재발급 토큰 유효시간 300분
     private long refreshTokenValidTime = 300 * 60 * 1000L;
@@ -48,7 +48,7 @@ public class JwtTokenProvider {
         claims.put("roles", users.getRoles().get(0)); // 정보는 key / value 쌍으로 저장된다.
         claims.put("username", users.getNick());
         claims.put("email", users.getEmail());
-//        claims.put("userId", users.getUserId());
+        claims.put("user_id", users.getUser_id());
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장

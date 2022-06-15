@@ -5,30 +5,40 @@ import com.geonoo.magazine.model.Boards;
 import com.geonoo.magazine.model.Users;
 import com.geonoo.magazine.repository.BoardsRepository;
 import com.geonoo.magazine.repository.UsersRepository;
+import com.geonoo.magazine.s3.AwsS3Service;
 import com.geonoo.magazine.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardsService {
 
     private final BoardsRepository boardsRepository;
 
     private final UsersRepository usersRepository;
 
-    public String saveBoard(BoardsDto boardsDto, UserDetailsImpl userDetails){
+    private final AwsS3Service awsS3Service;
+
+    @Value("${cloud.aws.domain}")
+    private String domain;
+
+    public String saveBoard(BoardsDto boardsDto, UserDetailsImpl userDetails , List<MultipartFile> files){
 
         Users users = usersRepository.findByEmail(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("등록된 사용자가 아닙니다")
         );
         Boards boards = new Boards(
                 boardsDto.getTitle(),
-                boardsDto.getImg_url(),
+                awsS3Service.uploadFile(files).get(0),
                 boardsDto.getBody(),
                 boardsDto.getTemplate(),
                 users);
@@ -50,14 +60,18 @@ public class BoardsService {
 
     @Transactional
     public String deleteOneBoard(Long boardId){
-        getBoards(boardId);
+        Boards boards = getBoards(boardId);
+        log.info(boards.getImg_url().split(domain)[1]);
+        awsS3Service.deleteFile(boards.getImg_url().split(domain)[1]);
         boardsRepository.deleteById(boardId);
         return "삭제완료";
     }
 
     @Transactional
-    public String updateOneBoard(Long boardId, BoardsDto boardsDto){
+    public String updateOneBoard(Long boardId, BoardsDto boardsDto, List<MultipartFile> files){
         Boards boards = getBoards(boardId);
+        awsS3Service.deleteFile(boards.getImg_url().split(domain)[1]);
+        boardsDto.setImg_url(awsS3Service.uploadFile(files).get(0));
         boards.update(boardsDto);
         return "수정완료";
     }

@@ -2,12 +2,14 @@ package com.geonoo.magazine.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
+@ToString
 public class BoardsDto {
 
     private Long userId;
