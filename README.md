@@ -79,10 +79,21 @@ query {
 - 리펙토링 시에 통일된 End-Point를 맞춰야겠다는 생각이 들었다.
 - response-entity만들기!
 #### Entity 설계를 위해 무엇을 하였나요?
-- ?!
+- [데이터베이스 설계](https://github.com/geonoo/magazine/wiki/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EC%84%A4%EA%B3%84)
+- 유저와 게시물 (유저)oneToMany(게시물)
+- 유저와 좋아요 (유저)oneToMany(좋아요)
+- 게시물과 좋아요 (게시물)oneToMany(좋아요)
 
 #### 연관관계에 근거하여 설명해주세요.
-- ?!
+- 유저는 게시물을 여러개 작성할 수 있기 때문에 OneToMany로 해주었다.
+- 좋아요는 여러개의 게시물을 좋아요할 수 있고, 여러명의 유저가 좋아요 할 수 있다. 그래서 N:M의 관계를 가지므로 좋아요 테이블을 두어서 유저와 게시물을 (유저,게시물)OneToMany(좋아요) 로 해주었다.
+
+#### N+1 문제
+- 만약 게시물 엔티티에서 좋아요 엔티티를 EAGER(즉시로딩)로 사용하고 'select * from 게시물 limit 100' 를 수행한다면 좋아요를 가져오기 위해 쿼리가 100개가 같이 날아간다.
+- 위와 같은 문제를 n+1이라고는 하는데 그래서 LAZY(지연로딩)을 사용해서 어느정도 해결은 했다.
+- 하지만 그렇다고 해서 해결된 것은 아니라고 한다. [참조](https://incheol-jung.gitbook.io/docs/q-and-a/spring/n+1)
+- @EntityGraph를 이용하면 된다고 하는데 좀 더 공부가 필요한 것 같다.
+
 
 ## 요구사항
 #### 회원가입
@@ -138,7 +149,7 @@ query {
 #### @AuthenticationPrincipal
  - 로그인한 사용자만 접근할 수 있는 API를 만들고 싶었다.
  - Restful하게 하기 위해서 API URL를 맞춰주어야 했습니다.
- - 문제는 SecurityFilterChain의 authorizeRequests()를 이용하려고하니 같은 URL로 Method만 변경된 경우가 있었습니다.
+ - 문제는 SecurityFilterChain의 authorizeRequests()를 이용하려고하니 같은 URL로 Method만 막는 방법을 찾지 못했습니다.
  - 그래서 메소드 파라미터에 @AuthenticationPrincipal를 추가해서 현재 로그인한 사용자를 가져와서 확인헀다.
 
 
