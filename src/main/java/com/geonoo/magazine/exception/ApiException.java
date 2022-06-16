@@ -26,7 +26,7 @@ public class ApiException extends RuntimeException{
 //        Map<String, String> errors = new HashMap<>();
 //        errors.put("message", e.getMessage());
 //        errors.put("result", "Fail");
-        return ResponseEntity.internalServerError().body(e.getMessage());
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }
