@@ -122,6 +122,7 @@ query {
 - 이 말은 백엔드에서 API를 만들어주면 다른 IP나 다른 포트에서 해당 API를 호출할 수 없게하는 보안정책 입니다.
 - 그래서 프론트엔드 개발자와 협업하려면 cross-origin 요청을 하려면 백엔드 서버의 동의가 필요합니다.
 - 해당 이슈 해결방법은 WebSecurityConfig.java 파일에서 CorsConfigurationSource를 bean으로 등록해서 사용하고 있습니다.
+- 현재 프론트쪽에서 테스트하기 위해 *(ALL)로 열어놓음, 실제로는 프론트경로와 포트를 지정해줘야 한다.
 - [CORS](https://github.com/geonoo/magazine/blob/main/src/main/java/com/geonoo/magazine/security/WebSecurityConfig.java)
 
 #### 생성일 순 정렬
