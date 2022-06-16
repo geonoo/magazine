@@ -14,11 +14,16 @@ import java.util.Map;
 public class ApiException extends RuntimeException{
 
     @ExceptionHandler(MethodArgumentNotValidException.class) //예외가 발생한 요청을 처리하기 위해
-    public ResponseEntity<Map<String, String>> handleMethodNotValidException(MethodArgumentNotValidException e){
+    public ResponseEntity<String> handleMethodNotValidException(MethodArgumentNotValidException e){
         Map<String, String> errors = new HashMap<>();
+        final String[] message = {""};
+//        e.getBindingResult().getAllErrors()
+//                .forEach(c -> errors.put(((FieldError) c).getField(), c.getDefaultMessage()));
+
         e.getBindingResult().getAllErrors()
-                .forEach(c -> errors.put(((FieldError) c).getField(), c.getDefaultMessage()));
-        return ResponseEntity.badRequest().body(errors);
+                .forEach(c -> message[0] = c.getDefaultMessage().toString());
+
+        return ResponseEntity.badRequest().body(message[0]);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
