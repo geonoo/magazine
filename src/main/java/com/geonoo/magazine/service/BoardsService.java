@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +50,13 @@ public class BoardsService {
 
     public List<Boards> findAllBoard(){
         return boardsRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
+    }
+
+    public List<Boards> findByUsers(String email){
+        Users users = usersRepository.findByEmail(email).orElseThrow(
+                () -> new IllegalArgumentException("등록된 사용자가 아닙니다")
+        );
+        return boardsRepository.findByUsers(users);
     }
 
     @Transactional

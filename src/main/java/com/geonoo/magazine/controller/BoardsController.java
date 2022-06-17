@@ -42,6 +42,13 @@ public class BoardsController {
         return boardsService.findByBoardId(boardId);
     }
 
+    @GetMapping("/api/board/user")
+    public List<Boards> userBoard(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        loginCheck(userDetails);
+        return boardsService.findByUsers(userDetails.getUsername());
+    }
+
+
     @DeleteMapping("/api/board/{boardId}")
     public String deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         loginCheck(userDetails);
