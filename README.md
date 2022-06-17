@@ -93,6 +93,9 @@ query {
 - 하지만 그렇다고 해서 해결된 것은 아니라고 한다. [참조](https://incheol-jung.gitbook.io/docs/q-and-a/spring/n+1)
 - @EntityGraph를 이용하면 된다고 하는데 좀 더 공부가 필요한 것 같다.
 
+#### Unit test와 Integration test는 무엇이고, 어떻게 하는지 알아보기
+#### Integration test 시나리오 작성하기(개발자의 관점이 아닌 고객 관점)
+#### 서비스 레이어 테스트 코드 커버율 70% 이상 만들어오기
 
 ## 요구사항
 #### 회원가입
