@@ -2,11 +2,15 @@ package com.geonoo.magazine.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.geonoo.magazine.dto.BoardResponseDto;
 import com.geonoo.magazine.dto.BoardsDto;
 import com.geonoo.magazine.model.Boards;
 import com.geonoo.magazine.security.UserDetailsImpl;
 import com.geonoo.magazine.service.BoardsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,12 +34,10 @@ public class BoardsController {
     }
 
     @GetMapping("/api/board")
-    public List<Boards>  listBoard(){
-//        List<BoardResponseDto> resultList = Arrays.asList(
-//                modelMapper.map(boardsService.findAllBoard(), BoardResponseDto[].class)
-//        );
-        return boardsService.findAllBoard();
+    public Page<BoardResponseDto>  listBoard(@PageableDefault(size = 5) Pageable pageable){
+        return boardsService.findAllBoard(pageable);
     }
+
 
     @GetMapping("/api/board/{boardId}")
     public Boards oneBoard(@PathVariable Long boardId){

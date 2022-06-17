@@ -2,6 +2,8 @@ package com.geonoo.magazine.repository;
 
 import com.geonoo.magazine.model.Boards;
 import com.geonoo.magazine.model.Users;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +19,7 @@ public interface BoardsRepository extends JpaRepository<Boards, Long> {
 
 //    @Query("select b from Boards b where b.users.user_id" =: userId)
     List<Boards> findByUsers(Users users);
+
+    Page<Boards> findAll(Pageable pageable);
 
 }

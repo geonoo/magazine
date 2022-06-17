@@ -1,5 +1,6 @@
 package com.geonoo.magazine.service;
 
+import com.geonoo.magazine.dto.BoardResponseDto;
 import com.geonoo.magazine.dto.BoardsDto;
 import com.geonoo.magazine.model.Boards;
 import com.geonoo.magazine.model.Users;
@@ -10,6 +11,8 @@ import com.geonoo.magazine.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,8 +51,8 @@ public class BoardsService {
         return "추가완료";
     }
 
-    public List<Boards> findAllBoard(){
-        return boardsRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
+    public Page<BoardResponseDto> findAllBoard(Pageable pageable){
+        return boardsRepository.findAll(pageable).map(BoardResponseDto::new);
     }
 
     public List<Boards> findByUsers(String email){
