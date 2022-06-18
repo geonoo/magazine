@@ -81,9 +81,30 @@ public class BoardsService {
     @Transactional
     public String updateOneBoard(Long boardId, BoardsDto boardsDto, List<MultipartFile> files){
         Boards boards = getBoards(boardId);
-        awsS3Service.deleteFile(boards.getImg_url().split(domain)[1]);
-        boardsDto.setImg_url(awsS3Service.uploadFile(files).get(0));
-        boards.update(boardsDto);
+        String imgUrl = boards.getImg_url();
+        if (files != null && files.size() > 0){
+            imgUrl = awsS3Service.uploadFile(files).get(0);
+            awsS3Service.deleteFile(boards.getImg_url().split(domain)[1]);
+        }
+        String title = boards.getTitle();
+        String body = boards.getBody();
+        int tempate = boards.getTemplate();
+
+        if (boardsDto.getTitle() != null && !boardsDto.getTitle().isEmpty()) title = boardsDto.getTitle();
+
+        if (boardsDto.getBody() != null && !boardsDto.getBody().isEmpty()) body = boardsDto.getBody();
+
+        if (boardsDto.getTemplate() != 0 && boardsDto.getTemplate() != boards.getTemplate()) tempate = boardsDto.getTemplate();
+
+
+        BoardsDto updateDto = BoardsDto.builder()
+                .title(title)
+                .body(body)
+                .template(tempate)
+                .img_url(imgUrl)
+                .build();
+        boards.update(updateDto);
+
         return "수정완료";
     }
 

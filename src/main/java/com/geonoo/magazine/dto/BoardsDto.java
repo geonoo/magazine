@@ -1,27 +1,33 @@
 package com.geonoo.magazine.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
-@Setter
-@ToString
 public class BoardsDto {
-
-    private Long userId;
 
     @NotEmpty(message = "제목을 입력해주세요")
     private String title;
 
-    @NotBlank(message = "내용을 입력해주세요")
+    @NotEmpty(message = "내용을 입력해주세요")
     private String body;
 
-    @NotBlank(message = "이미지를 추가해주세요")
     private String img_url;
 
     private int template;
+
+    @Builder
+    BoardsDto(String title, String body, String img_url, int template){
+        this.title = title;
+        this.body = body;
+        this.img_url = img_url;
+        this.template = template;
+
+    }
+    BoardsDto(){
+
+    }
 }

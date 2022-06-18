@@ -1,8 +1,12 @@
 package com.geonoo.magazine.controller;
 
 import com.geonoo.magazine.dto.UsersDto;
+import com.geonoo.magazine.security.UserDetailsImpl;
 import com.geonoo.magazine.service.UsersService;
+import com.geonoo.magazine.validate.UserValidation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +30,12 @@ public class UsersController {
     @PostMapping("/api/login")
     public Map<String,  String> login(@RequestBody UsersDto usersDto) {
         return usersService.login(usersDto);
+    }
+
+    @DeleteMapping("/api/user")
+    public String deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        UserValidation.loginCheck(userDetails);
+        return usersService.deleteUser(userDetails);
     }
 
 }

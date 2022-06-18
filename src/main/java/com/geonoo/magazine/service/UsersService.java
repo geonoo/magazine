@@ -4,6 +4,7 @@ import com.geonoo.magazine.dto.UsersDto;
 import com.geonoo.magazine.model.Users;
 import com.geonoo.magazine.repository.UsersRepository;
 import com.geonoo.magazine.security.JwtTokenProvider;
+import com.geonoo.magazine.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,14 @@ public class UsersService {
         token.put("Access-Token", jwtTokenProvider.createAccessToken(users));
 
         return token;
+    }
+
+    @Transactional
+    public String deleteUser(UserDetailsImpl userDetails) {
+        Users users = usersRepository.findByEmail(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("등록된 사용자가 아닙니다")
+        );
+        usersRepository.deleteById(users.getUser_id());
+        return "삭제완료";
     }
 }

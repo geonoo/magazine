@@ -7,6 +7,8 @@ import com.geonoo.magazine.dto.BoardsDto;
 import com.geonoo.magazine.model.Boards;
 import com.geonoo.magazine.security.UserDetailsImpl;
 import com.geonoo.magazine.service.BoardsService;
+import com.geonoo.magazine.validate.BoardValidation;
+import com.geonoo.magazine.validate.UserValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +30,12 @@ public class BoardsController {
     @PostMapping("/api/board")
     public String addBoard(@RequestParam("board") String board, @RequestPart List<MultipartFile> files
             , @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
-        loginCheck(userDetails);
+        UserValidation.loginCheck(userDetails);
+
         BoardsDto boardsDto = objectMapper.readValue(board, BoardsDto.class);
+
+        BoardValidation.checkEmpty(boardsDto);
+        BoardValidation.checkMultiPart(files);
         return boardsService.saveBoard(boardsDto, userDetails, files);
     }
 
@@ -46,30 +52,27 @@ public class BoardsController {
 
     @GetMapping("/api/board/user")
     public List<Boards> userBoard(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        loginCheck(userDetails);
+        UserValidation.loginCheck(userDetails);
         return boardsService.findByUsers(userDetails.getUsername());
     }
 
 
     @DeleteMapping("/api/board/{boardId}")
     public String deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        loginCheck(userDetails);
+        UserValidation.loginCheck(userDetails);
         return boardsService.deleteOneBoard(boardId);
     }
 
     @PutMapping("/api/board/{boardId}")
     public String putBoard(@Valid @PathVariable Long boardId, @RequestParam("board") String board
-            , @RequestPart List<MultipartFile> files, @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
-        loginCheck(userDetails);
+            , @RequestPart(required = false) List<MultipartFile> files, @AuthenticationPrincipal UserDetailsImpl userDetails) throws JsonProcessingException {
+        UserValidation.loginCheck(userDetails);
+
         BoardsDto boardsDto = objectMapper.readValue(board, BoardsDto.class);
+
         return boardsService.updateOneBoard(boardId, boardsDto, files);
     }
 
-    private void loginCheck(UserDetailsImpl userDetails) {
-        System.out.println(userDetails);
-        if(userDetails == null){
-            throw new IllegalArgumentException("로그인이 필요합니다");
-        }
-    }
+
 
 }
