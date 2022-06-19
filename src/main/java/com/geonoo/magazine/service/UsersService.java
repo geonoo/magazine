@@ -1,6 +1,8 @@
 package com.geonoo.magazine.service;
 
 import com.geonoo.magazine.dto.UsersDto;
+import com.geonoo.magazine.exception.MsgEnum;
+import com.geonoo.magazine.model.Role;
 import com.geonoo.magazine.model.Users;
 import com.geonoo.magazine.repository.UsersRepository;
 import com.geonoo.magazine.security.JwtTokenProvider;
@@ -23,19 +25,18 @@ public class UsersService {
 
     @Transactional
     public String saveUser(UsersDto usersDto){
-
         Users users = Users.builder()
                 .email(usersDto.getEmail())
                 .password(passwordEncoder.encode(usersDto.getPassword()))
                 .nick(usersDto.getUsername())
-                .roles(Collections.singletonList("ROLE_USER"))
+                .roles(Collections.singletonList(Role.USER.getName()))
                 .build();
 
         if (checkEmailDuple(users.getEmail())){
-            throw new IllegalArgumentException("이미 사용중인 이메일 입니다");
+            throw new IllegalArgumentException(MsgEnum.duplicateEmail.getMsg());
         }else{
             usersRepository.save(users);
-            return "회원가입완료";
+            return MsgEnum.registrationComplete.getMsg();
         }
     }
     public boolean checkEmailDuple(String email){
@@ -46,23 +47,21 @@ public class UsersService {
         Map<String, String> token = new HashMap<>();
 
         Users users = usersRepository.findByEmail(usersDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("이메일 또는 패스워드를 확인해주세요"));
+                .orElseThrow(() -> new IllegalArgumentException(MsgEnum.confirmEmailPwd.getMsg()));
 
         if (!passwordEncoder.matches(usersDto.getPassword(), users.getPassword())) {
-            throw new IllegalArgumentException("이메일 또는 패스워드를 확인해주세요");
+            throw new IllegalArgumentException(MsgEnum.confirmEmailPwd.getMsg());
         }
-        System.out.println(users.toString());
-        token.put("Access-Token", jwtTokenProvider.createAccessToken(users));
+        token.put(MsgEnum.jwtHeaderName.getMsg(), jwtTokenProvider.createAccessToken(users));
 
         return token;
     }
-
     @Transactional
     public String deleteUser(UserDetailsImpl userDetails) {
         Users users = usersRepository.findByEmail(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 아닙니다")
+                () -> new IllegalArgumentException(MsgEnum.userNotFound.getMsg())
         );
         usersRepository.deleteById(users.getUser_id());
-        return "삭제완료";
+        return MsgEnum.deleteComplete.getMsg();
     }
 }

@@ -1,5 +1,6 @@
 package com.geonoo.magazine.security;
 
+import com.geonoo.magazine.exception.MsgEnum;
 import com.geonoo.magazine.model.Users;
 import com.geonoo.magazine.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Users users = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(MsgEnum.userNotFound.getMsg()));
 
         return new UserDetailsImpl(users.getEmail(), users.getRoles(), users.getPassword());
     }

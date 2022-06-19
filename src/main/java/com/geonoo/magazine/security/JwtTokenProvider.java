@@ -1,5 +1,6 @@
 package com.geonoo.magazine.security;
 
+import com.geonoo.magazine.exception.MsgEnum;
 import com.geonoo.magazine.model.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -84,12 +85,12 @@ public class JwtTokenProvider {
 
     // Request의 Header에서 token 값을 가져옵니다. "Access-Token" : "TOKEN값'
     public String accessResolveToken(HttpServletRequest request) {
-        return request.getHeader("Access-Token");
+        return request.getHeader(MsgEnum.jwtHeaderName.getMsg());
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "Refresh-Token" : "TOKEN값'
     public String refreshResolveToken(HttpServletRequest request) {
-        return request.getHeader("Refresh-Token");
+        return request.getHeader(MsgEnum.jwtHeaderNameRefresh.getMsg());
     }
 
     // 토큰의 유효성 + 만료일자 확인

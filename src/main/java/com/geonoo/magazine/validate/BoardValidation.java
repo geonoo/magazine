@@ -14,7 +14,7 @@ public class BoardValidation {
     }
 
     public static void checkMultiPart(List<MultipartFile> list){
-        if (list != null && list.size() == 0){
+        if (list == null || list.size() == 0){
             throw new IllegalArgumentException("파일을 등록해주세요");
         }
     }
