@@ -7,6 +7,7 @@ import com.geonoo.magazine.model.Role;
 import com.geonoo.magazine.model.Users;
 import com.geonoo.magazine.repository.UsersRepository;
 import com.geonoo.magazine.security.JwtTokenProvider;
+import com.geonoo.magazine.security.UserDetailsImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
 
+import static com.geonoo.magazine.exception.MsgEnum.jwtHeaderName;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -70,30 +72,19 @@ class UsersServiceTest {
                 .email("ada@navaer.com")
                 .build();
 
-        UsersDto usersDto2 = UsersDto.builder()
-                .email("ada@navaer.com")
-                .build();
-
         //when
-        when(usersService.checkEmailDuple(usersDto.getEmail())).thenReturn(false);
-
+        when(usersRepository.existsByEmail(usersDto.getEmail())).thenReturn(true);
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                usersService.saveUser(usersDto)
+        );
         // then
-        boolean result = usersService.checkEmailDuple(usersDto2.getEmail());
-        assertEquals(false, result);
-
-    }
-
-    void exception1(String email){
-        if (usersService.checkEmailDuple(email)){
-            throw new IllegalArgumentException(MsgEnum.duplicateEmail.getMsg());
-        }
+        assertEquals(MsgEnum.duplicateEmail.getMsg(), exception.getMessage());
     }
 
     @Test
     @DisplayName("비밀번호 확인 정상")
     void test3() {
         //given
-        Map<String, String> token = new HashMap<>();
         List<String> role = new ArrayList<>();
 
         UsersDto usersDto = UsersDto.builder()
@@ -124,7 +115,6 @@ class UsersServiceTest {
     @DisplayName("비밀번호 틀렸을 때")
     void test4() {
         //given
-        Map<String, String> token = new HashMap<>();
         List<String> role = new ArrayList<>();
 
         UsersDto usersDto = UsersDto.builder()
@@ -151,4 +141,121 @@ class UsersServiceTest {
 
     }
 
+    @Test
+    @DisplayName("정상 로그인")
+    void test5() {
+        //given
+        List<String> role = new ArrayList<>();
+        role.add("ROLE_USER");
+        Users users = Users.builder()
+                .user_id(1L)
+                .email("adad@naver.com")
+                .password(passwordEncoder.encode("Passw0rd!@#"))
+                .roles(role)
+                .nick("건우짱")
+                .build();
+
+        Map<String, String> token = new HashMap<>();
+        token.put(jwtHeaderName.getMsg(), "토큰토큰");
+
+        UsersDto usersDto = UsersDto.builder()
+                .email("adad@naver.com")
+                .password("Passw0rd!@#")
+                .build();
+
+        //when
+        when(usersRepository.findByEmail("adad@naver.com")).thenReturn(Optional.of(users));
+        when(passwordEncoder.matches(usersDto.getPassword(), users.getPassword())).thenReturn(true);
+        when(jwtTokenProvider.createAccessToken(users)).thenReturn("토큰토큰");
+
+        Map<String, String> result = usersService.login(usersDto);
+
+        //then
+        assertEquals("토큰토큰", result.get(MsgEnum.jwtHeaderName.getMsg()));
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 없는 이메일")
+    void test6() {
+        //given
+        String email = "geonoo@naver.com";
+        String password = "Passw0rd!@#";
+        UsersDto usersDto = UsersDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+
+        //when
+        when(usersRepository.findByEmail(email)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                usersService.login(usersDto)
+        );
+
+        //then
+        assertEquals(MsgEnum.confirmEmailPwd.getMsg(), exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 비밀번호 틀림")
+    void test7() {
+        //given
+        String email = "geonoo@naver.com";
+        String password = "Passw0rd!@#";
+
+        UsersDto usersDto = UsersDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        Users users = Users.builder()
+                .email(email)
+                .password("인코딩된 비밀번호")
+                .build();
+
+
+        //when
+        when(usersRepository.findByEmail(email)).thenReturn(Optional.of(users));
+        when(passwordEncoder.matches(usersDto.getPassword(), users.getPassword())).thenReturn(false);
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                usersService.login(usersDto)
+        );
+
+        //then
+        assertEquals(MsgEnum.confirmEmailPwd.getMsg(), exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("정상 회원삭제")
+    void test8() {
+        //given
+        String email = "geonoo@naver.com";
+        UserDetailsImpl userDetails = new UserDetailsImpl(email, null);
+        Users users = Users.builder()
+                .user_id(1L)
+                .email("geonoo@naver.com")
+                .build();
+        //when
+        when(usersRepository.findByEmail(email)).thenReturn(Optional.of(users));
+        String result = usersService.deleteUser(userDetails);
+
+        //then
+        assertEquals(MsgEnum.deleteComplete.getMsg(), result);
+    }
+
+    @Test
+    @DisplayName("회원삭제 - 실패")
+    void test9() {
+        //given
+        String email = "geonoo@naver.com";
+        UserDetailsImpl userDetails = new UserDetailsImpl(email, null);
+        //when
+        when(usersRepository.findByEmail(email)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                usersService.deleteUser(userDetails)
+        );
+
+        //then
+        assertEquals(MsgEnum.userNotFound.getMsg(), exception.getMessage());
+    }
 }

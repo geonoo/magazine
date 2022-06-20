@@ -21,6 +21,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1' // jwt
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' // S3
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+    testImplementation 'commons-fileupload:commons-fileupload:1.4' //파일 업로드 테스트
+//    testImplementation 'org.apache.tika:tika-core:2.3.0' //파일 업로드 테스트
 //    implementation 'io.springfox:springfox-boot-starter:3.0.0'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'

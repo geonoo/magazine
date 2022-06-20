@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@AllArgsConstructor @NoArgsConstructor
-@Getter @Builder
+@Getter
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "u-id")
 public class Users extends BaseTime{
 
@@ -47,7 +46,19 @@ public class Users extends BaseTime{
     }
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    @Builder
+    public Users(Long user_id, String email, String nick, String password, List<String> roles){
+        this.user_id = user_id;
+        this.email = email;
+        this.nick = nick;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    public Users() {
+
+    }
 
 }

@@ -2,18 +2,16 @@ package com.geonoo.magazine.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.geonoo.magazine.dto.BoardsDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter @Entity @NoArgsConstructor
+@Getter @Entity
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "b-id")
-@ToString
 public class Boards extends BaseTime{
 
 
@@ -45,8 +43,14 @@ public class Boards extends BaseTime{
         favorites.setBoards(this);
         this.favoritesList.add(favorites);
     }
+    public void setUsers(Users users){
+        this.users = users;
+    }
 
-    public Boards(String title, String img_url, String body, int template, Users user) {
+
+    @Builder
+    public Boards(Long board_id, String title, String img_url, String body, int template, Users user) {
+        this.board_id = board_id;
         this.title = title;
         this.img_url = img_url;
         this.body = body;
@@ -54,6 +58,10 @@ public class Boards extends BaseTime{
         this.template = template;
         this.username = user.getNick();
         user.addBoards(this);
+    }
+
+    public Boards() {
+
     }
 
     public void update(BoardsDto boardsDto){

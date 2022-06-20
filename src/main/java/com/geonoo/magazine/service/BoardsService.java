@@ -2,24 +2,23 @@ package com.geonoo.magazine.service;
 
 import com.geonoo.magazine.dto.BoardResponseDto;
 import com.geonoo.magazine.dto.BoardsDto;
+import com.geonoo.magazine.exception.MsgEnum;
 import com.geonoo.magazine.model.Boards;
 import com.geonoo.magazine.model.Users;
 import com.geonoo.magazine.repository.BoardsRepository;
 import com.geonoo.magazine.repository.UsersRepository;
-import com.geonoo.magazine.s3.AwsS3Service;
 import com.geonoo.magazine.security.UserDetailsImpl;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,31 +32,34 @@ public class BoardsService {
     private final AwsS3Service awsS3Service;
 
     @Value("${cloud.aws.domain}")
-    private String domain;
+    private final String domain;
 
     public String saveBoard(BoardsDto boardsDto, UserDetailsImpl userDetails , List<MultipartFile> files){
 
         Users users = usersRepository.findByEmail(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 아닙니다")
+                () -> new IllegalArgumentException(MsgEnum.userNotFound.getMsg())
         );
-        Boards boards = new Boards(
-                boardsDto.getTitle(),
-                awsS3Service.uploadFile(files).get(0),
-                boardsDto.getBody(),
-                boardsDto.getTemplate(),
-                users);
+        Boards boards = Boards.builder()
+                .title(boardsDto.getTitle())
+                .img_url(awsS3Service.uploadFile(files).get(0))
+                .body(boardsDto.getBody())
+                .template(boardsDto.getTemplate())
+                .user(users)
+                .build();
 
         boardsRepository.save(boards);
-        return "추가완료";
+        return MsgEnum.addComplete.getMsg();
     }
 
     public Page<BoardResponseDto> findAllBoard(Pageable pageable){
+        Page<Boards> all = boardsRepository.findAll(pageable);
+        System.out.println(all.getSize());
         return boardsRepository.findAll(pageable).map(BoardResponseDto::new);
     }
 
     public List<Boards> findByUsers(String email){
         Users users = usersRepository.findByEmail(email).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 아닙니다")
+                () -> new IllegalArgumentException(MsgEnum.userNotFound.getMsg())
         );
         return boardsRepository.findByUsers(users);
     }
@@ -65,8 +67,7 @@ public class BoardsService {
     @Transactional
     public Boards findByBoardId(Long boardId){
         boardsRepository.updateView(boardId);
-        Boards boards = getBoards(boardId);
-        return boards;
+        return getBoards(boardId);
     }
 
     @Transactional
@@ -75,7 +76,7 @@ public class BoardsService {
         log.info(boards.getImg_url().split(domain)[1]);
         awsS3Service.deleteFile(boards.getImg_url().split(domain)[1]);
         boardsRepository.deleteById(boardId);
-        return "삭제완료";
+        return MsgEnum.deleteComplete.getMsg();
     }
 
     @Transactional
@@ -105,13 +106,12 @@ public class BoardsService {
                 .build();
         boards.update(updateDto);
 
-        return "수정완료";
+        return MsgEnum.updateComplete.getMsg();
     }
 
     private Boards getBoards(Long boardId) {
-        Boards boards = boardsRepository.findById(boardId).orElseThrow(
-                () -> new IllegalArgumentException("게시물이 없습니다")
+        return boardsRepository.findById(boardId).orElseThrow(
+                () -> new IllegalArgumentException(MsgEnum.boardNotFound.getMsg())
         );
-        return boards;
     }
 }

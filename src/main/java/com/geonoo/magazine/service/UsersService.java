@@ -53,7 +53,6 @@ public class UsersService {
             throw new IllegalArgumentException(MsgEnum.confirmEmailPwd.getMsg());
         }
         token.put(MsgEnum.jwtHeaderName.getMsg(), jwtTokenProvider.createAccessToken(users));
-
         return token;
     }
     @Transactional
