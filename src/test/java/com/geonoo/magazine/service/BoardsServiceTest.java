@@ -26,6 +26,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,51 @@ class BoardsServiceTest {
         List<MultipartFile> fileList = new ArrayList<>();
         fileList.add(multipartFile);
         return fileList;
+    }
+
+    private MultipartFile emptyImage() {
+        MultipartFile multipartFile = new MultipartFile() {
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public String getOriginalFilename() {
+                return null;
+            }
+
+            @Override
+            public String getContentType() {
+                return null;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public long getSize() {
+                return 0;
+            }
+
+            @Override
+            public byte[] getBytes() throws IOException {
+                return new byte[0];
+            }
+
+            @Override
+            public InputStream getInputStream() throws IOException {
+                return null;
+            }
+
+            @Override
+            public void transferTo(File dest) throws IOException, IllegalStateException {
+
+            }
+        };
+        return multipartFile;
     }
 
     @DisplayName("정상 게시물 등록")
@@ -299,4 +345,123 @@ class BoardsServiceTest {
         //then
         assertEquals(MsgEnum.updateComplete.getMsg(), result);
     }
+
+    @DisplayName("정상 게시물 수정 - 이미지만")
+    @Test
+    void test10() throws IOException {
+        //given
+        Users users = Users.builder()
+                .user_id(1L)
+                .email("geonoo@naver.com")
+                .build();
+
+        BoardsDto boardsDto = BoardsDto.builder()
+                .title("")
+                .body("")
+                .template(2)
+                .build();
+
+        Boards boards = Boards.builder()
+                .board_id(2L)
+                .title("원본 제목")
+                .body("원본 내용")
+                .template(1)
+                .img_url(domain+"원래.png")
+                .user(users)
+                .build();
+
+        List<MultipartFile> files = getImage();
+
+        List<String> fileRtn = new ArrayList<>();
+        fileRtn.add(domain+"밥.png");
+        //when
+        BoardsService boardsServiceRe = new BoardsService(boardsRepository, usersRepository, awsS3Service, domain);
+        when(boardsRepository.findById(any())).thenReturn(Optional.of(boards));
+        when(awsS3Service.uploadFile(files)).thenReturn(fileRtn);
+
+        String result = boardsServiceRe.updateOneBoard(2L, boardsDto, files);
+
+        //then
+        assertEquals(MsgEnum.updateComplete.getMsg(), result);
+    }
+
+    @DisplayName("정상 게시물 수정 - 이미지만2")
+    @Test
+    void test11() throws IOException {
+        //given
+        Users users = Users.builder()
+                .user_id(1L)
+                .email("geonoo@naver.com")
+                .build();
+
+        BoardsDto boardsDto = BoardsDto.builder()
+                .title(null)
+                .body(null)
+                .template(0)
+                .build();
+
+        Boards boards = Boards.builder()
+                .board_id(2L)
+                .title("원본 제목")
+                .body("원본 내용")
+                .template(1)
+                .img_url(domain+"원래.png")
+                .user(users)
+                .build();
+
+        List<MultipartFile> files = getImage();
+
+        List<String> fileRtn = new ArrayList<>();
+        fileRtn.add(domain+"밥.png");
+        //when
+        BoardsService boardsServiceRe = new BoardsService(boardsRepository, usersRepository, awsS3Service, domain);
+        when(boardsRepository.findById(any())).thenReturn(Optional.of(boards));
+        when(awsS3Service.uploadFile(files)).thenReturn(fileRtn);
+
+        String result = boardsServiceRe.updateOneBoard(2L, boardsDto, files);
+
+        //then
+        assertEquals(MsgEnum.updateComplete.getMsg(), result);
+    }
+
+    @DisplayName("정상 게시물 수정 - 이미지 없는거")
+    @Test
+    void test12() throws IOException {
+        //given
+        Users users = Users.builder()
+                .user_id(1L)
+                .email("geonoo@naver.com")
+                .build();
+
+        BoardsDto boardsDto = BoardsDto.builder()
+                .title(null)
+                .body(null)
+                .template(0)
+                .build();
+
+        Boards boards = Boards.builder()
+                .board_id(2L)
+                .title("원본 제목")
+                .body("원본 내용")
+                .template(1)
+                .img_url(domain+"원래.png")
+                .user(users)
+                .build();
+
+        List<MultipartFile> files = new  ArrayList<>();
+        files.add(emptyImage());
+
+        List<String> fileRtn = new ArrayList<>();
+        fileRtn.add(domain+"밥.png");
+        //when
+        BoardsService boardsServiceRe = new BoardsService(boardsRepository, usersRepository, awsS3Service, domain);
+        when(boardsRepository.findById(any())).thenReturn(Optional.of(boards));
+        when(awsS3Service.uploadFile(files)).thenReturn(fileRtn);
+
+        String result = boardsServiceRe.updateOneBoard(2L, boardsDto, files);
+
+        //then
+        assertEquals(MsgEnum.updateComplete.getMsg(), result);
+    }
+
 }
