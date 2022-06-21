@@ -423,7 +423,7 @@ class BoardsServiceTest {
         //then
         assertEquals(MsgEnum.updateComplete.getMsg(), result);
     }
- 
+
     @DisplayName("정상 게시물 수정 - 이미지 없는거")
     @Test
     void test12() throws IOException {
