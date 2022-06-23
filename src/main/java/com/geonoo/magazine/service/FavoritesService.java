@@ -1,5 +1,6 @@
 package com.geonoo.magazine.service;
 
+import com.geonoo.magazine.exception.MsgEnum;
 import com.geonoo.magazine.model.Boards;
 import com.geonoo.magazine.model.Favorites;
 import com.geonoo.magazine.model.Users;
@@ -27,10 +28,13 @@ public class FavoritesService {
 
         Optional<Favorites> optionalLikes = favoritesRepository.findByBoardsAndUsers(boards, users);
         if(optionalLikes.isPresent()){
-            throw new IllegalArgumentException("이미 좋아요 누른 사용자 입니다");
+            throw new IllegalArgumentException(MsgEnum.alreadyLiked.getMsg());
         }
 
-        Favorites likes = new Favorites(boards, users);
+        Favorites likes = Favorites.builder()
+                .boards(boards)
+                .users(users)
+                .build();
         favoritesRepository.save(likes);
         return favoritesRepository.countAllByBoardsAndUsers(boards, users);
     }
@@ -41,8 +45,8 @@ public class FavoritesService {
         Boards boards = getBoards(boardId);
 
         Optional<Favorites> optionalFavorites = favoritesRepository.findByBoardsAndUsers(boards, users);
-        if(!optionalFavorites.isPresent()){
-            throw new IllegalArgumentException("취소할 내용이 없습니다");
+        if(optionalFavorites.isEmpty()){
+            throw new IllegalArgumentException(MsgEnum.alreadyNotLiked.getMsg());
         }
 
         favoritesRepository.deleteById(optionalFavorites.get().getId());
@@ -51,13 +55,13 @@ public class FavoritesService {
 
     private Users getUsers(UserDetailsImpl userDetails) {
         return usersRepository.findByEmail(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다")
+                () -> new IllegalArgumentException(MsgEnum.userNotFound.getMsg())
         );
     }
 
     private Boards getBoards(Long boardId) {
         return boardsRepository.findById(boardId).orElseThrow(
-                () -> new IllegalArgumentException("게시물이 없습니다")
+                () -> new IllegalArgumentException(MsgEnum.boardNotFound.getMsg())
         );
     }
 
